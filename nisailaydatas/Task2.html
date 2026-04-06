@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Physics Task 2 - Constant Acceleration</title>
+    <title>Physics Task 2 - Constant Acceleration Simulation</title>
     
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -11,65 +11,93 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 40px; background-color: #f4f7f6; color: #333; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .problem-box { background: #fff3cd; padding: 20px; border-left: 6px solid #ffc107; margin-bottom: 25px; border-radius: 4px; }
-        .solution-step { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        #plot { width: 100%; height: 400px; margin-top: 20px; }
-        h2 { color: #2c3e50; border-bottom: 2px solid #ffc107; padding-bottom: 10px; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 20px; background-color: #f0f2f5; color: #1c1e21; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .header { border-bottom: 3px solid #ffc107; padding-bottom: 10px; margin-bottom: 20px; }
+        .problem-box { background: #fff9db; padding: 20px; border-left: 6px solid #ffc107; margin-bottom: 25px; font-style: italic; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .solution-side { padding: 15px; background: #fafafa; border-radius: 10px; }
+        .simulation-side { padding: 15px; text-align: center; }
+        #animation-container { width: 100%; height: 150px; background: #333; border-radius: 8px; position: relative; margin-bottom: 10px; overflow: hidden; }
+        #ball { width: 30px; height: 30px; background: #ffc107; border-radius: 50%; position: absolute; left: 0; top: 60px; box-shadow: 0 0 15px #ffc107; }
+        button { padding: 10px 25px; font-size: 16px; background: #ffc107; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #e0a800; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Physics Basics L5 - Task 2</h2>
+    <div class="header">
+        <h2>Task 2: Constant Acceleration Dynamics</h2>
+    </div>
 
     <div class="problem-box">
-        <strong>Problem Statement:</strong><br>
-        An object starts from rest (\( v_0 = 0 \)) and accelerates at a constant rate of \( a = 2 \text{ m/s}^2 \) for \( t = 3 \text{ s} \). 
-        Find the final velocity and the total distance traveled.
+        "An object starts from rest (\( v_0 = 0 \)) and accelerates at a rate of \( a = 2 \text{ m/s}^2 \) for \( t = 3 \text{ s} \). Calculate final velocity and displacement."
     </div>
 
-    <div class="solution-step">
-        <strong>1. Final Velocity (\(v_f\)):</strong><br>
-        Using the kinematic equation:<br>
-        $$v_f = v_0 + a \cdot t$$
-        $$v_f = 0 + (2 \text{ m/s}^2 \cdot 3 \text{ s}) = 6 \text{ m/s}$$
-    </div>
+    <div class="grid-layout">
+        <div class="solution-side">
+            <h4>Mathematical Derivation</h4>
+            <p>1. <strong>Final Velocity (\(v_f\)):</strong></p>
+            $$v_f = v_0 + (a \cdot t)$$
+            $$v_f = 0 + (2 \cdot 3) = \mathbf{6 \text{ m/s}}$$
+            
+            <p>2. <strong>Distance Traveled (\(s\)):</strong></p>
+            $$s = v_0 t + \frac{1}{2} a t^2$$
+            $$s = 0 + \frac{1}{2} \cdot 2 \cdot 3^2 = \mathbf{9 \text{ meters}}$$
+        </div>
 
-    <div class="solution-step">
-        <strong>2. Distance Traveled (\(d\)):</strong><br>
-        Using the displacement formula:<br>
-        $$d = v_0 \cdot t + \frac{1}{2} a \cdot t^2$$
-        $$d = 0 + \frac{1}{2} (2) \cdot (3)^2 = 9 \text{ meters}$$
+        <div class="simulation-side">
+            <h4>Live Simulation</h4>
+            <div id="animation-container">
+                <div id="ball"></div>
+            </div>
+            <button onclick="startSimulation()">Start Animation</button>
+            <div id="plot" style="height: 300px;"></div>
+        </div>
     </div>
-
-    <div id="plot"></div>
 </div>
 
 <script>
-    // Zaman serisi oluşturma (0'dan 3 saniyeye)
-    var time = [0, 0.5, 1, 1.5, 2, 2.5, 3];
-    var velocity = time.map(t => 2 * t); // v = a*t
+    function startSimulation() {
+        const ball = document.getElementById('ball');
+        let startTime = null;
+        const duration = 3000; // 3 saniye
+        const containerWidth = document.getElementById('animation-container').offsetWidth - 30;
 
-    var trace = {
-        x: time,
-        y: velocity,
+        function animate(currentTime) {
+            if (!startTime) startTime = currentTime;
+            let elapsed = currentTime - startTime;
+            let t = Math.min(elapsed / 1000, 3); // max 3 saniye
+
+            // Fizik Formülü: s = 1/2 * a * t^2 (ivmeli hareket)
+            // containerWidth / 9 (toplam yol) oranında ölçeklendiriyoruz
+            let position = (0.5 * 2 * t * t) * (containerWidth / 9);
+            ball.style.left = position + 'px';
+
+            if (t < 3) {
+                requestAnimationFrame(animate);
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    // Grafik Çizimi
+    const tValues = [0, 0.5, 1, 1.5, 2, 2.5, 3];
+    const vValues = tValues.map(t => 2 * t);
+
+    Plotly.newPlot('plot', [{
+        x: tValues,
+        y: vValues,
         mode: 'lines+markers',
-        type: 'scatter',
-        name: 'Velocity vs Time',
-        line: { color: '#ffc107', width: 3 },
-        marker: { size: 8, color: '#2c3e50' }
-    };
-
-    var layout = {
-        title: 'Velocity-Time Graph (Constant Acceleration)',
-        xaxis: { title: 'Time (s)' },
-        yaxis: { title: 'Velocity (m/s)' },
-        plot_bgcolor: '#fff'
-    };
-
-    Plotly.newPlot('plot', [trace], layout);
+        line: {color: '#ffc107', width: 3},
+        name: 'v(t) = a*t'
+    }], {
+        title: 'Velocity-Time Graph',
+        margin: { t: 30, b: 30, l: 40, r: 10 },
+        xaxis: {title: 'Time (s)'},
+        yaxis: {title: 'Velocity (m/s)'}
+    });
 </script>
 
 </body>
