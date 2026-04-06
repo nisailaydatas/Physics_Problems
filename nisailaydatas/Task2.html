@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Physics Task 2 - Constant Acceleration</title>
+    <title>Physics Task 2 - Final Version</title>
     
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -10,53 +10,75 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 30px; background-color: #f8f9fa; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .problem-box { background: #fff3cd; padding: 15px; border-left: 5px solid #ffc107; margin-bottom: 20px; }
-        .simulation-area { background: #222; height: 120px; position: relative; border-radius: 8px; margin: 20px 0; overflow: hidden; border: 2px solid #444; }
-        #ball { width: 30px; height: 30px; background: #ffc107; border-radius: 50%; position: absolute; left: 0; top: 45px; box-shadow: 0 0 10px #ffc107; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: black; }
-        button { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
-        button:hover { background: #218838; }
-        .math-steps { line-height: 1.8; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 20px; background-color: #f4f4f9; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .problem-box { background: #fff3cd; padding: 15px; border-left: 5px solid #ffc107; margin-bottom: 20px; font-style: italic; }
+        .track { background: #333; height: 80px; position: relative; border-radius: 8px; margin: 20px 0; overflow: hidden; }
+        #ball { width: 30px; height: 30px; background: #ffc107; border-radius: 50%; position: absolute; left: 0; top: 25px; box-shadow: 0 0 10px #ffc107; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: black; }
+        button { background: #28a745; color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
+        .math { margin-bottom: 20px; line-height: 1.6; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Task 2: Motion with Constant Acceleration</h2>
+    <h2>Task 2: Constant Acceleration Simulation</h2>
 
     <div class="problem-box">
-        <strong>Task:</strong> An object starts from rest (\(v_0 = 0\)) and accelerates at \(a = 2 \, \text{m/s}^2\) for \(t = 3 \, \text{s}\). Calculate \(v_f\) and \(d\).
+        "An object starts from rest (\(v_0 = 0\)) and accelerates at \(a = 2 \, \text{m/s}^2\) for \(t = 3 \, \text{s}\)."
     </div>
 
-    <div class="math-steps">
-        <strong>Calculations:</strong><br>
-        1. Final Velocity: \(v_f = v_0 + a \cdot t = 0 + 2 \cdot 3 = \mathbf{6 \, \text{m/s}}\)<br>
-        2. Distance: \(d = v_0 t + \frac{1}{2} a t^2 = 0 + \frac{1}{2} \cdot 2 \cdot 3^2 = \mathbf{9 \, \text{meters}}\)
+    <div class="math">
+        <strong>1. Final Velocity:</strong> \(v_f = v_0 + at = 0 + 2 \cdot 3 = 6 \, \text{m/s}\)<br>
+        <strong>2. Displacement:</strong> \(d = v_0t + \frac{1}{2}at^2 = 0 + \frac{1}{2} \cdot 2 \cdot 3^2 = 9 \, \text{m}\)
     </div>
 
-    <div class="simulation-area">
-        <div id="ball">0</div>
+    <div class="track">
+        <div id="ball">0.0</div>
     </div>
     
-    <button onclick="runSim()">Start Simulation</button>
+    <button onclick="start()">START SIMULATION</button>
 
-    <div id="plot" style="width:100%; height:350px;"></div>
+    <div id="plot" style="width:100%; height:300px; margin-top:20px;"></div>
 </div>
 
 <script>
-    function runSim() {
+    function start() {
         const ball = document.getElementById('ball');
-        let start = null;
-        const duration = 3000; // 3 saniye
-        const pathWidth = document.querySelector('.simulation-area').offsetWidth - 35;
+        const trackWidth = document.querySelector('.track').offsetWidth - 35;
+        let startTime = null;
 
         function step(timestamp) {
-            if (!start) start = timestamp;
-            let progress = timestamp - start;
-            let t = Math.min(progress / 1000, 3); // max 3 sn
+            if (!startTime) startTime = timestamp;
+            let t = (timestamp - startTime) / 1000;
 
-            // Pozisyon formülü: s = 1/2 * a * t^2
-            // a=2 olduğu için s = t^2. Maksimum s=9. 
-            let posFactor = (t * t) / 9; 
-            ball.style.left = (posFactor *
+            if (t <= 3) {
+                // Pozisyon: s = t^2 (a=2 olduğu için) -> Oran: t^2 / 9
+                let pos = (t * t / 9) * trackWidth;
+                ball.style.left = pos + 'px';
+                ball.innerText = (2 * t).toFixed(1);
+                requestAnimationFrame(step);
+            } else {
+                ball.style.left = trackWidth + 'px';
+                ball.innerText = "6.0";
+            }
+        }
+        requestAnimationFrame(step);
+    }
+
+    // Grafik çizimi
+    Plotly.newPlot('plot', [{
+        x: [0, 0.5, 1, 1.5, 2, 2.5, 3],
+        y: [0, 1, 2, 3, 4, 5, 6],
+        mode: 'lines+markers',
+        line: {color: '#ffc107', width: 3}
+    }], {
+        title: 'Velocity vs Time',
+        xaxis: {title: 'Time (s)'},
+        yaxis: {title: 'Velocity (m/s)'},
+        margin: {t:40, b:40, l:40, r:20}
+    });
+</script>
+
+</body>
+</html>
