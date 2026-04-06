@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Task 2 - Constant Acceleration</title>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 40px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .problem-box { background: #fff3cd; padding: 20px; border-left: 6px solid #ffc107; margin-bottom: 25px; border-radius: 4px; }
+        .solution-step { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        #plot { width: 100%; height: 400px; margin-top: 20px; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #ffc107; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Physics Basics L5 - Task 2</h2>
+
+    <div class="problem-box">
+        <strong>Problem Statement:</strong><br>
+        An object starts from rest (\( v_0 = 0 \)) and accelerates at a constant rate of \( a = 2 \text{ m/s}^2 \) for \( t = 3 \text{ s} \). 
+        Find the final velocity and the total distance traveled.
+    </div>
+
+    <div class="solution-step">
+        <strong>1. Final Velocity (\(v_f\)):</strong><br>
+        Using the kinematic equation:<br>
+        $$v_f = v_0 + a \cdot t$$
+        $$v_f = 0 + (2 \text{ m/s}^2 \cdot 3 \text{ s}) = 6 \text{ m/s}$$
+    </div>
+
+    <div class="solution-step">
+        <strong>2. Distance Traveled (\(d\)):</strong><br>
+        Using the displacement formula:<br>
+        $$d = v_0 \cdot t + \frac{1}{2} a \cdot t^2$$
+        $$d = 0 + \frac{1}{2} (2) \cdot (3)^2 = 9 \text{ meters}$$
+    </div>
+
+    <div id="plot"></div>
+</div>
+
+<script>
+    // Zaman serisi oluşturma (0'dan 3 saniyeye)
+    var time = [0, 0.5, 1, 1.5, 2, 2.5, 3];
+    var velocity = time.map(t => 2 * t); // v = a*t
+
+    var trace = {
+        x: time,
+        y: velocity,
+        mode: 'lines+markers',
+        type: 'scatter',
+        name: 'Velocity vs Time',
+        line: { color: '#ffc107', width: 3 },
+        marker: { size: 8, color: '#2c3e50' }
+    };
+
+    var layout = {
+        title: 'Velocity-Time Graph (Constant Acceleration)',
+        xaxis: { title: 'Time (s)' },
+        yaxis: { title: 'Velocity (m/s)' },
+        plot_bgcolor: '#fff'
+    };
+
+    Plotly.newPlot('plot', [trace], layout);
+</script>
+
+</body>
+</html>
