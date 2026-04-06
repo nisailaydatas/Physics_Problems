@@ -1,38 +1,80 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Physics Task 1 - Speed vs Velocity</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Task 1 - Velocity and Displacement</title>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
     <style>
-        body { font-family: sans-serif; margin: 20px; line-height: 1.6; }
-        .solution { background: #f4f4f4; padding: 15px; border-left: 5px solid #2ecc71; }
-        #plot { width: 100%; height: 400px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background-color: #f9f9f9; color: #333; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .problem-box { background: #eef2f3; padding: 20px; border-left: 6px solid #3498db; margin-bottom: 25px; border-radius: 4px; }
+        .solution-step { margin-bottom: 15px; font-size: 1.1em; }
+        #plot { width: 100%; height: 450px; margin-top: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
     </style>
 </head>
 <body>
-    <h2>Task 1: Displacement and Average Velocity</h2>
-    <p><b>Problem:</b> An object moves from A(2, 3) to B(5, 7) in 2 seconds.</p>
-    
-    <div class="solution">
-        <h3>Step-by-Step Solution:</h3>
-        <p>1. <b>Displacement ($\Delta r$):</b> $\sqrt{(5-2)^2 + (7-3)^2} = \sqrt{3^2 + 4^2} = 5$ meters.</p>
-        <p>2. <b>Average Velocity ($V_{avg}$):</b> $\Delta r / \Delta t = 5m / 2s = 2.5$ m/s.</p>
-        <p>3. <b>Unit Conversion:</b> $2.5 \times 3.6 = 9$ km/h.</p>
+
+<div class="container">
+    <h2>Physics Basics L5 - Task 1</h2>
+
+    <div class="problem-box">
+        <strong>Problem Statement:</strong><br>
+        An object moves from point \( A(2, 3) \) to point \( B(5, 7) \) in \( 2 \) seconds. 
+        Calculate the displacement and the average velocity of the object.
+    </div>
+
+    <div class="solution-step">
+        <strong>1. Displacement (\(\Delta r\)):</strong><br>
+        Using the Pythagorean theorem:<br>
+        $$\Delta r = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$$
+        $$\Delta r = \sqrt{(5 - 2)^2 + (7 - 3)^2} = \sqrt{3^2 + 4^2} = 5 \text{ meters}$$
+    </div>
+
+    <div class="solution-step">
+        <strong>2. Average Velocity (\(V_{avg}\)):</strong><br>
+        $$V_{avg} = \frac{\Delta r}{\Delta t} = \frac{5 \text{ m}}{2 \text{ s}} = 2.5 \text{ m/s}$$
+    </div>
+
+    <div class="solution-step">
+        <strong>3. Unit Conversion:</strong><br>
+        To convert m/s to km/h, we multiply by 3.6:<br>
+        $$2.5 \text{ m/s} \times 3.6 = 9 \text{ km/h}$$
     </div>
 
     <div id="plot"></div>
+</div>
 
-    <script>
-        var data = [{
-            x: [2, 5], y: [3, 7],
-            type: 'scatter', mode: 'lines+markers+text',
-            text: ['Point A(2,3)', 'Point B(5,7)'],
-            textposition: 'top center',
-            line: {color: 'red', width: 3}
-        }];
-        var layout = { title: 'Movement Vector', xaxis: {range: [0, 8]}, yaxis: {range: [0, 10]} };
-        Plotly.newPlot('plot', data, layout);
-    </script>
+<script>
+    // Grafik verileri
+    var trace = {
+        x: [2, 5],
+        y: [3, 7],
+        mode: 'lines+markers+text',
+        type: 'scatter',
+        name: 'Displacement Vector',
+        text: ['Start (A)', 'End (B)'],
+        textposition: 'top center',
+        line: { color: '#e74c3c', width: 4 },
+        marker: { size: 12, color: '#2c3e50' }
+    };
+
+    var layout = {
+        title: 'Object Displacement Visualization',
+        xaxis: { title: 'X Position (m)', range: [0, 8], gridcolor: '#eee' },
+        yaxis: { title: 'Y Position (m)', range: [0, 10], gridcolor: '#eee' },
+        plot_bgcolor: '#fff',
+        paper_bgcolor: '#fff'
+    };
+
+    Plotly.newPlot('plot', [trace], layout);
+</script>
+
 </body>
 </html>
